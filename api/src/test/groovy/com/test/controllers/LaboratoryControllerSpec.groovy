@@ -60,10 +60,4 @@ class LaboratoryControllerSpec extends Specification {
         expect:
         createdLaboratory.cuit == "123"
     }
-
-    /**
-     * Test the creation of a new laboratory
-     * Test that is not possible to create two laboratories with the same cuit
-     * Update a laboratory
-     */
 }
