@@ -1,0 +1,26 @@
+---
+micronaut:
+  application:
+    name: api
+
+---
+datasources.default: {}
+---
+hibernate:
+  hbm2ddl:
+    auto: create
+
+dataSource:
+  url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
+  dbCreate: create-drop
+  driverClassName: org.postgresql.Driver
+  username: ${db.username}
+  password: ${db.password}
+  dialect: POSTGRES
+
+#hibernate:
+  #cache:
+    #queries: false
+    #use_second_level_cache: true
+    #use_query_cache: false
+    #region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory

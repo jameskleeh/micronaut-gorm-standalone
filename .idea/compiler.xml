@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="medications.anmat-scraper.main" target="1.8" />
+      <module name="medications.anmat-scraper.test" target="1.8" />
+      <module name="medications.medications-api.main" target="1.8" />
+      <module name="medications.medications-api.test" target="1.8" />
+      <module name="medications.medications-domain.main" target="1.8" />
+      <module name="medications.medications-domain.test" target="1.8" />
+      <module name="micronaut-gorm-standalone.medications-api.main" target="1.8" />
+      <module name="micronaut-gorm-standalone.medications-api.test" target="1.8" />
+      <module name="micronaut-gorm-standalone.medications-domain.main" target="1.8" />
+      <module name="micronaut-gorm-standalone.medications-domain.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

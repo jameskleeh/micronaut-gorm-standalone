@@ -1,0 +1,46 @@
+plugins {
+    // Apply the groovy plugin to add support for Groovy
+    id 'groovy'
+}
+
+dependencies {
+    // Use the latest Groovy version for building this library
+    compile 'org.codehaus.groovy:groovy-all:2.5.6'
+
+    //Only "io.micronaut.data:micronaut-data-processor:1.0.0.M5"
+    //compile 'io.micronaut.data:micronaut-data-hibernate-jpa:1.0.0.M5'
+    //compileOnly "io.micronaut.data:micronaut-data-processor:1.0.0.M5"
+
+    implementation "io.micronaut.configuration:micronaut-hibernate-validator"
+    compile 'io.micronaut.configuration:micronaut-hibernate-gorm'
+    //implementation "org.grails:grails-datastore-gorm-hibernate5"
+
+    // Use Tomcat connection pool
+    runtime 'org.apache.tomcat:tomcat-jdbc'
+    // Use H2 database driver
+    runtime  'com.h2database:h2'
+    
+    compileOnly platform("io.micronaut:micronaut-bom:$micronautVersion")
+    compileOnly "io.micronaut:micronaut-inject-groovy"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    //implementation "io.micronaut.configuration:micronaut-jdbc-tomcat"
+    
+    testCompileOnly platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation("org.spockframework:spock-core") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation "io.micronaut.test:micronaut-test-spock"
+    testImplementation "io.micronaut.test:micronaut-test-junit5"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.5.0"
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}

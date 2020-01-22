@@ -1,0 +1,80 @@
+plugins {
+    id "groovy"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "application"
+}
+
+
+
+version "0.1"
+group "api"
+
+apply plugin:"application"
+apply plugin:"groovy"
+
+repositories {
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly 
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.5.6'
+
+    compile project(':domain')
+    
+    //compileOnly "io.micronaut.data:micronaut-data-processor:1.0.0.M5"
+    implementation "io.micronaut.configuration:micronaut-hibernate-validator"
+    //compile 'io.micronaut.configuration:micronaut-hibernate-gorm'
+    implementation "org.grails:grails-datastore-gorm-hibernate5:7.0.1.RELEASE"
+
+    // Use Tomcat connection pool
+    runtime "org.apache.tomcat:tomcat-jdbc:8.5.0"
+    runtime "org.apache.tomcat.embed:tomcat-embed-logging-log4j:8.5.0"
+    runtime "org.slf4j:slf4j-api:1.7.10"
+    // Use H2 database driver
+    runtime  'com.h2database:h2'
+    
+    compileOnly platform("io.micronaut:micronaut-bom:$micronautVersion")
+    compileOnly "io.micronaut:micronaut-inject-groovy"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    //implementation "io.micronaut.configuration:micronaut-jdbc-tomcat"
+    implementation "io.micronaut:micronaut-http-client"
+    implementation 'io.micronaut:micronaut-http-server-netty'
+    implementation "io.micronaut:micronaut-runtime-groovy"
+    implementation "io.micronaut:micronaut-validation"
+    //implementation "io.micronaut.data:micronaut-data-hibernate-jpa"
+    //runtimeOnly "com.h2database:h2"
+    runtime 'org.postgresql:postgresql:42.2.4'
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    testCompileOnly platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation("org.spockframework:spock-core") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    testCompileOnly "io.micronaut:micronaut-inject-groovy"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation "io.micronaut.test:micronaut-test-spock"
+    testImplementation "io.micronaut.test:micronaut-test-junit5"
+    testImplementation "org.grails:grails-datastore-gorm-hibernate5"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.5.0"
+}
+
+test.classpath += configurations.developmentOnly
+
+mainClassName = "com.test.Application"
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
+}

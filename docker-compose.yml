@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: postgres:10.5
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - test
+
+  api:
+    build:
+      context: api
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=test
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    ports:
+      - 8080:8080
+    networks:
+      - test
+    depends_on:
+      - db
+
+  adminer:
+    image: adminer
+    ports:
+      - 8090:8080
+    networks:
+      - test
+
+networks:
+  test:
