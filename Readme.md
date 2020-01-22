@@ -1,3 +1,5 @@
+Repository created in order to show a possible bug on micronaut with groovy: https://github.com/micronaut-projects/micronaut-groovy/issues/34#event-2970360074
+
 ### Task List
 
 - [x] Steps to reproduce provided
@@ -157,54 +159,57 @@ api_1      |    ... 100 common frames omitted
 
 https://github.com/mpccolorado/micronaut-gorm-standalone
 
-### Tests
-**Another related issue**
-The tests are passing and are not getting the exception in the same way as the actual application. Maybe I am doing something wrong but these are the tests:
+### Note about Tests
+In order to make the build success I have added an Ignore annotation on `LaboratoryControllerSpec`
 
+*Stacktrace on test:*
 ```
-@MicronautTest
-@Transactional
-@Ignore
-class LaboratoryControllerSpec extends Specification {
-
-    @Shared @Inject
-    EmbeddedServer embeddedServer
-
-    @Shared @AutoCleanup @Inject @Client("/")
-    RxHttpClient client
-
-    void "test post a new laboratory"() {
-        given:
-        Laboratory laboratory = new Laboratory()
-        laboratory.cuit = "123"
-        laboratory.name = "Some name"
-        laboratory.gln = "x"
-        HttpRequest request = HttpRequest
-                .create(HttpMethod.POST, "/laboratory")
-                .body(laboratory)
-                .contentType(MediaType.APPLICATION_JSON)
-        HttpResponse response = client.toBlocking().exchange(request)
-
-        expect:
-        response.status == HttpStatus.OK
-    }
-
-    void "test post a new laboratory - 2"() {
-        given:
-        Laboratory laboratory = new Laboratory()
-        laboratory.cuit = "123"
-        laboratory.name = "Some name"
-        laboratory.gln = "x"
-        HttpRequest request = HttpRequest
-                .create(HttpMethod.POST, "/laboratory")
-                .body(laboratory)
-                .contentType(MediaType.APPLICATION_JSON)
-        Laboratory createdLaboratory = client.toBlocking().retrieve(request, Laboratory)
-
-        expect:
-        createdLaboratory.cuit == "123"
-    }
-}
-
+io.micronaut.http.codec.CodecException: Error encoding object [com.test.Laboratory : (unsaved)] to JSON: Either class [com.test.Laboratory] is not a domain class or GORM has not been initialized correctly or has already been shutdown. Ensure GORM is loaded and configured correctly before calling any methods on a GORM entity. (through reference chain: com.test.Laboratory["attached"])
+	at io.micronaut.jackson.codec.JsonMediaTypeCodec.encode(JsonMediaTypeCodec.java:176)
+	at io.micronaut.jackson.codec.JsonMediaTypeCodec.encode(JsonMediaTypeCodec.java:182)
+	at io.micronaut.http.client.DefaultHttpClient.lambda$buildNettyRequest$41(DefaultHttpClient.java:1556)
+	at java.util.Optional.map(Optional.java:215)
+	at io.micronaut.http.client.DefaultHttpClient.buildNettyRequest(DefaultHttpClient.java:1556)
+	at io.micronaut.http.client.DefaultHttpClient.sendRequestThroughChannel(DefaultHttpClient.java:1594)
+	at io.micronaut.http.client.DefaultHttpClient.lambda$null$27(DefaultHttpClient.java:1052)
+	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:577)
+	at io.netty.util.concurrent.DefaultPromise.notifyListeners0(DefaultPromise.java:570)
+	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:549)
+	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:490)
+	at io.netty.util.concurrent.DefaultPromise.setValue0(DefaultPromise.java:615)
+	at io.netty.util.concurrent.DefaultPromise.setSuccess0(DefaultPromise.java:604)
+	at io.netty.util.concurrent.DefaultPromise.trySuccess(DefaultPromise.java:104)
+	at io.netty.channel.DefaultChannelPromise.trySuccess(DefaultChannelPromise.java:84)
+	at io.netty.channel.nio.AbstractNioChannel$AbstractNioUnsafe.fulfillConnectPromise(AbstractNioChannel.java:300)
+	at io.netty.channel.nio.AbstractNioChannel$AbstractNioUnsafe.finishConnect(AbstractNioChannel.java:335)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:688)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:635)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:552)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:514)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$6.run(SingleThreadEventExecutor.java:1050)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: Either class [com.test.Laboratory] is not a domain class or GORM has not been initialized correctly or has already been shutdown. Ensure GORM is loaded and configured correctly before calling any methods on a GORM entity. (through reference chain: com.test.Laboratory["attached"])
+	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:394)
+	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:353)
+	at com.fasterxml.jackson.databind.ser.std.StdSerializer.wrapAndThrow(StdSerializer.java:316)
+	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:727)
+	at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(BeanSerializer.java:155)
+	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider._serialize(DefaultSerializerProvider.java:480)
+	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.serializeValue(DefaultSerializerProvider.java:319)
+	at com.fasterxml.jackson.databind.ObjectMapper._configAndWriteValue(ObjectMapper.java:3906)
+	at com.fasterxml.jackson.databind.ObjectMapper.writeValueAsBytes(ObjectMapper.java:3244)
+	at io.micronaut.jackson.codec.JsonMediaTypeCodec.encode(JsonMediaTypeCodec.java:173)
+	... 24 more
+Caused by: java.lang.IllegalStateException: Either class [com.test.Laboratory] is not a domain class or GORM has not been initialized correctly or has already been shutdown. Ensure GORM is loaded and configured correctly before calling any methods on a GORM entity.
+	at org.grails.datastore.gorm.GormEnhancer.stateException(GormEnhancer.groovy:467)
+	at org.grails.datastore.gorm.GormEnhancer.findInstanceApi(GormEnhancer.groovy:315)
+	at org.grails.datastore.gorm.GormEnhancer.findInstanceApi(GormEnhancer.groovy:312)
+	at org.grails.datastore.gorm.GormEntity$Trait$Helper.currentGormInstanceApi(GormEntity.groovy:1366)
+	at org.grails.datastore.gorm.GormEntity$Trait$Helper.isAttached(GormEntity.groovy:176)
+	at com.fasterxml.jackson.databind.ser.BeanPropertyWriter.serializeAsField(BeanPropertyWriter.java:688)
+	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:719)
+	... 30 more
 ```
 
