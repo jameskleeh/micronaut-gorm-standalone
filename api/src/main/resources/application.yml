@@ -10,13 +10,7 @@ hibernate:
   hbm2ddl:
     auto: create
 
-dataSource:
-  url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
-  dbCreate: create-drop
-  driverClassName: org.postgresql.Driver
-  username: ${db.username}
-  password: ${db.password}
-  dialect: POSTGRES
+
 
 #hibernate:
   #cache:

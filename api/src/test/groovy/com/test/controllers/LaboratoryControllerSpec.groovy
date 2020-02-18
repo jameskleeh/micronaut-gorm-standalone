@@ -18,9 +18,8 @@ import spock.lang.Shared
 import javax.inject.Inject
 import javax.transaction.Transactional
 
-@MicronautTest
+@MicronautTest(packages = "com.test")
 @Transactional
-@Ignore
 class LaboratoryControllerSpec extends Specification {
 
     @Shared @Inject

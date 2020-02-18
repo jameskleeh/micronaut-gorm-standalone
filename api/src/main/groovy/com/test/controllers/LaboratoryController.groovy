@@ -8,12 +8,14 @@ import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import org.grails.orm.hibernate.HibernateDatastore
 
 import javax.inject.Inject
 
 
 @Controller("/laboratory")
 class LaboratoryController {
+
     @Inject LaboratoryService laboratoryService
 
     @Get("/")
